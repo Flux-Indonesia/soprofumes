@@ -34,6 +34,16 @@ export default function HomePage() {
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
 
+  // Preload all hero frames
+  useEffect(() => {
+    const images: HTMLImageElement[] = [];
+    for (let i = 1; i <= 51; i++) {
+      const img = new Image();
+      img.src = `/ezgif-14cd968e970b1b3b-jpg/ezgif-frame-${String(i).padStart(3, "0")}.jpg`;
+      images.push(img);
+    }
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       if (!heroRef.current) return;
@@ -59,6 +69,8 @@ export default function HomePage() {
               src={`/ezgif-14cd968e970b1b3b-jpg/ezgif-frame-${String(currentFrame).padStart(3, "0")}.jpg`}
               alt=""
               className="w-full h-full object-cover"
+              loading="eager"
+              decoding="sync"
             />
             <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(135deg, rgba(0,0,0,0.25) 0%, rgba(20,20,40,0.27) 50%, rgba(0,0,0,0.3) 100%)", opacity: overlayOpacity }} />
           </div>
