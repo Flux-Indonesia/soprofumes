@@ -3,6 +3,7 @@ import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { CartProvider } from "@/context/cart-context";
 import { WishlistProvider } from "@/context/wishlist-context";
 
@@ -37,6 +38,7 @@ export default function RootLayout({
       >
         <CartProvider>
           <WishlistProvider>
+            <SmoothScroll />
             <Navbar />
             <main>{children}</main>
             <Footer />

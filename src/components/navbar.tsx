@@ -46,19 +46,14 @@ export function Navbar() {
   return (
     <>
       {/* Navbar */}
-      <motion.header
-        className="fixed top-0 left-0 w-full z-[60]"
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
+      <nav
+        className={`fixed top-0 left-0 w-full z-[60] flex items-center justify-between px-4 sm:px-8 md:px-12 transition-all duration-700 ${
+          scrolled
+            ? "border-b border-white/10 py-3 sm:py-4"
+            : "py-4 sm:py-5"
+        }`}
+        style={scrolled ? { backgroundColor: 'rgba(10, 10, 10, 0.35)', backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' } : { backgroundColor: 'transparent' }}
       >
-        <div
-          className={`flex items-center justify-between px-6 md:px-12 py-4 transition-all duration-500 ${
-            scrolled
-              ? "bg-[#0A0A0A]/90 backdrop-blur-md border-b border-white/5"
-              : "bg-transparent"
-          }`}
-        >
           {/* Left - Menu */}
           <div className="flex items-center gap-4">
             <button
@@ -106,8 +101,7 @@ export function Navbar() {
               )}
             </Link>
           </div>
-        </div>
-      </motion.header>
+      </nav>
 
       {/* Search Modal */}
       <AnimatePresence>
