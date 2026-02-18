@@ -18,6 +18,7 @@ const shopCategories = [
 
 export default function HomePage() {
   const [currentFrame, setCurrentFrame] = useState(1);
+  const [overlayOpacity, setOverlayOpacity] = useState(1);
   const heroRef = useRef<HTMLDivElement>(null);
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
@@ -29,6 +30,7 @@ export default function HomePage() {
       const scrollProgress = Math.min(1, Math.max(0, -rect.top / (rect.height - window.innerHeight)));
       const frame = Math.floor(scrollProgress * 50) + 1;
       setCurrentFrame(Math.min(51, Math.max(1, frame)));
+      setOverlayOpacity(Math.max(0.7, 1 - scrollProgress * 0.3));
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -47,7 +49,7 @@ export default function HomePage() {
               alt=""
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+            <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(135deg, rgba(0,0,0,0.25) 0%, rgba(20,20,40,0.27) 50%, rgba(0,0,0,0.3) 100%)", opacity: overlayOpacity }} />
           </div>
           <div className="relative z-20 h-full flex flex-col items-center justify-end text-center px-6">
             <motion.div
