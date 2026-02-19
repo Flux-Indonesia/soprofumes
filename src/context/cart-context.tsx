@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { products } from "@/data/products";
+import { products, Product } from "@/data/products";
 
 interface CartItem {
   productId: number;
@@ -14,6 +14,9 @@ interface CartContextType {
   removeFromCart: (productId: number) => void;
   clearCart: () => void;
   getCartCount: () => number;
+  cartModalProduct: Product | null;
+  showCartModal: boolean;
+  closeCartModal: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -21,6 +24,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [cartModalProduct, setCartModalProduct] = useState<Product | null>(null);
+  const [showCartModal, setShowCartModal] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("sopro-cart");
@@ -53,6 +58,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (qty > 0) return [...prev, { productId, quantity: qty }];
       return prev;
     });
+
+    const product = products.find((p) => p.id === productId);
+    if (product && qty > 0) {
+      setCartModalProduct(product);
+      setShowCartModal(true);
+    }
+  };
+
+  const closeCartModal = () => {
+    setShowCartModal(false);
   };
 
   const removeFromCart = (productId: number) => {
@@ -67,7 +82,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const getCartCount = () => cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, getCartCount }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        getCartCount,
+        cartModalProduct,
+        showCartModal,
+        closeCartModal,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

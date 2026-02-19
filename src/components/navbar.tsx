@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Search, Heart, User, ShoppingBag } from "lucide-react";
+import { Menu, X, Search, Heart, User, ShoppingBag, ArrowUpRight } from "lucide-react";
 import { useCart } from "@/context/cart-context";
 import { useWishlist } from "@/context/wishlist-context";
 import { products } from "@/data/products";
 
 const menuLinks = [
-  { name: "The Lab", href: "/" },
+  { name: "The Lab (Home)", href: "/" },
   { name: "The Collection", href: "/shop" },
   { name: "Neural Drops", href: "/drops" },
   { name: "Scent Analyzer", href: "/analyzer" },
@@ -22,6 +23,7 @@ const menuLinks = [
 export function Navbar() {
   const { getCartCount } = useCart();
   const { wishlist } = useWishlist();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -34,14 +36,29 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const searchPages = [
+    { name: "The Collection", page: "/shop" },
+    { name: "Neural Drops", page: "/drops" },
+    { name: "Scent Analyzer", page: "/analyzer" },
+    { name: "The Community", page: "/community" },
+    { name: "Guide", page: "/education" },
+    { name: "Our Manifesto", page: "/about" },
+    { name: "Inquiries", page: "/contact" },
+  ];
+
   const searchResults = searchQuery.length > 1
-    ? products.filter(
-        (p) =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.category.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 5)
-    : [];
+    ? {
+        products: products.filter(
+          (p) =>
+            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            p.category.toLowerCase().includes(searchQuery.toLowerCase())
+        ).slice(0, 5),
+        pages: searchPages.filter((p) =>
+          p.name.toLowerCase().includes(searchQuery.toLowerCase())
+        ),
+      }
+    : { products: [], pages: [] };
 
   return (
     <>
@@ -104,74 +121,108 @@ export function Navbar() {
       </nav>
 
       {/* Search Modal */}
-      <AnimatePresence>
-        {searchOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[70] flex items-start justify-center pt-32"
+      <div className={`fixed inset-0 z-[110] transition-all duration-500 ${searchOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-2xl" onClick={() => setSearchOpen(false)} />
+        <div className="relative min-h-screen flex flex-col justify-start items-center p-8 pt-32">
+          <button
             onClick={() => setSearchOpen(false)}
+            className="absolute top-8 right-8 sm:top-10 sm:right-10 p-4 hover:rotate-90 transition-all duration-500"
           >
-            <motion.div
-              initial={{ y: -30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -30, opacity: 0 }}
-              className="w-full max-w-2xl mx-6"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="relative">
-                <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" />
-                <input
-                  autoFocus
-                  type="text"
-                  placeholder="Search fragrances, pages, or moods..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 pl-12 pr-12 py-4 text-white placeholder:text-white/40 focus:border-[#D4AF37] focus:outline-none text-lg"
-                />
-                <button onClick={() => setSearchOpen(false)} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
-                  <X size={20} />
-                </button>
+            <X size={28} strokeWidth={1} />
+          </button>
+
+          <div className="w-full max-w-2xl">
+            <div className="relative mb-12">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 opacity-40" size={24} strokeWidth={1} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search fragrances, pages, or moods..."
+                className="w-full bg-white/[0.03] border border-white/10 rounded-[2rem] py-6 pl-16 pr-8 text-lg outline-none focus:border-[#D4AF37] transition-all placeholder:opacity-40"
+                autoFocus={searchOpen}
+              />
+            </div>
+
+            {searchQuery && (
+              <div className="space-y-8 max-h-[60vh] overflow-y-auto">
+                {searchResults.products.length > 0 && (
+                  <div>
+                    <h3 className="text-sm uppercase tracking-[0.4em] opacity-40 font-bold mb-6">Fragrances</h3>
+                    <div className="grid gap-4">
+                      {searchResults.products.map((p) => (
+                        <Link
+                          key={p.id}
+                          href={`/product/${p.id}`}
+                          onClick={() => setSearchOpen(false)}
+                          className="flex items-center gap-6 p-6 bg-white/[0.03] border border-white/10 rounded-[1.5rem] hover:border-[#D4AF37] transition-all text-left group"
+                        >
+                          <img src={p.image} className="w-16 h-16 object-cover rounded-lg" alt={p.name} />
+                          <div className="flex-1">
+                            <h4 className="font-bold mb-1 group-hover:text-[#D4AF37] transition-colors">{p.name}</h4>
+                            <p className="text-sm opacity-60 line-clamp-1">{p.description}</p>
+                            <div className="flex gap-2 mt-2">
+                              <span className="text-xs px-2 py-1 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full">{p.category}</span>
+                              {p.moods.slice(0, 2).map((m) => (
+                                <span key={m} className="text-xs px-2 py-1 bg-white/10 opacity-60 rounded-full">{m}</span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold">£{p.price}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {searchResults.pages.length > 0 && (
+                  <div>
+                    <h3 className="text-sm uppercase tracking-[0.4em] opacity-40 font-bold mb-6">Pages</h3>
+                    <div className="grid gap-3">
+                      {searchResults.pages.map((pg) => (
+                        <Link
+                          key={pg.page}
+                          href={pg.page}
+                          onClick={() => setSearchOpen(false)}
+                          className="flex items-center justify-between p-4 bg-white/[0.03] border border-white/10 rounded-[1rem] hover:border-[#D4AF37] transition-all text-left group"
+                        >
+                          <span className="font-bold group-hover:text-[#D4AF37] transition-colors">{pg.name}</span>
+                          <ArrowUpRight size={16} className="opacity-40 group-hover:opacity-100 transition-all" />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {searchQuery && searchResults.products.length === 0 && searchResults.pages.length === 0 && (
+                  <div className="text-center py-16 opacity-40">
+                    <Search size={48} className="mx-auto mb-4" />
+                    <p className="text-lg font-medium">No results found</p>
+                    <p className="text-sm mt-2">Try searching for fragrance names, categories, or moods</p>
+                  </div>
+                )}
               </div>
-              {searchResults.length > 0 && (
-                <div className="mt-2 bg-[#111]/95 border border-white/10 divide-y divide-white/5">
-                  {searchResults.map((p) => (
-                    <Link
-                      key={p.id}
-                      href={`/product/${p.id}`}
-                      onClick={() => setSearchOpen(false)}
-                      className="flex items-center gap-4 p-4 hover:bg-white/5 transition-colors"
+            )}
+
+            {!searchQuery && (
+              <div className="space-y-6 opacity-60">
+                <h3 className="text-sm uppercase tracking-[0.4em] font-bold">Popular Searches</h3>
+                <div className="flex flex-wrap gap-3">
+                  {["Oud", "Oriental", "Woody", "Floral", "Neural Drops", "Scent Analyzer"].map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => setSearchQuery(t)}
+                      className="px-4 py-2 bg-white/[0.03] border border-white/10 rounded-full text-sm hover:border-[#D4AF37] transition-all"
                     >
-                      <img src={p.image} alt={p.name} className="w-12 h-14 object-cover rounded" />
-                      <div>
-                        <p className="text-white text-sm">{p.name}</p>
-                        <p className="text-white/40 text-xs">{p.category} · £{p.price}</p>
-                      </div>
-                    </Link>
+                      {t}
+                    </button>
                   ))}
                 </div>
-              )}
-              {searchQuery.length === 0 && (
-                <div className="mt-4 text-center text-white/30 text-sm">
-                  <p className="mb-3">Popular Searches</p>
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {["Oud", "Reef", "Vanilla", "Woody"].map((t) => (
-                      <button
-                        key={t}
-                        onClick={() => setSearchQuery(t)}
-                        className="px-3 py-1 border border-white/10 rounded-full text-xs text-white/50 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
-                      >
-                        {t}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       {/* Fullscreen Menu Overlay */}
       <AnimatePresence>
@@ -185,35 +236,41 @@ export function Navbar() {
           >
             <button
               onClick={() => setMenuOpen(false)}
-              className="absolute top-6 right-6 text-[#D4AF37] hover:rotate-90 transition-transform duration-500 z-20"
+              className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors duration-300 z-20"
             >
-              <div className="border border-[#D4AF37]/30 rounded-full p-3">
-                <X size={24} strokeWidth={1} />
-              </div>
+              <X size={22} strokeWidth={1.5} />
             </button>
 
-            <div className="relative z-10 flex flex-col items-center gap-3">
-              <span className="text-[#D4AF37] text-xs uppercase tracking-[0.4em] mb-6">
-                Navigation
-              </span>
-              {menuLinks.map((link, i) => (
-                <motion.div className="overflow-hidden" key={link.name}>
-                  <Link href={link.href} onClick={() => setMenuOpen(false)}>
-                    <motion.span
-                      initial={{ y: 100 }}
-                      animate={{ y: 0 }}
-                      transition={{
-                        delay: 0.3 + i * 0.08,
-                        duration: 0.8,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                      className="block font-serif text-3xl md:text-5xl text-white hover:text-[#D4AF37] transition-colors duration-300 italic"
-                    >
-                      {link.name}
-                    </motion.span>
-                  </Link>
-                </motion.div>
-              ))}
+            {/* Gold double vertical lines on right */}
+            <div className="absolute right-6 top-[15%] bottom-[15%] flex gap-[3px]">
+              <div className="w-[1.5px] h-full bg-[#D4AF37] opacity-70" />
+              <div className="w-[1.5px] h-full bg-[#D4AF37] opacity-70" />
+            </div>
+
+            <div className="relative z-10 flex flex-col items-center gap-4">
+              {menuLinks.map((link, i) => {
+                const isActive = pathname === link.href;
+                return (
+                  <motion.div className="overflow-hidden" key={link.name}>
+                    <Link href={link.href} onClick={() => setMenuOpen(false)}>
+                      <motion.span
+                        initial={{ y: 100 }}
+                        animate={{ y: 0 }}
+                        transition={{
+                          delay: 0.3 + i * 0.08,
+                          duration: 0.8,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                        className={`block font-serif text-4xl md:text-6xl transition-colors duration-300 ${
+                          isActive ? "text-[#D4AF37]" : "text-white hover:text-[#D4AF37]"
+                        }`}
+                      >
+                        {link.name}
+                      </motion.span>
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         )}

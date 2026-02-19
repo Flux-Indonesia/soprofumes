@@ -6,6 +6,8 @@ import { Footer } from "@/components/footer";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { CartProvider } from "@/context/cart-context";
 import { WishlistProvider } from "@/context/wishlist-context";
+import { CartModal } from "@/components/cart-modal";
+import { ToastProvider } from "@/components/toast";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -36,14 +38,17 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${cormorant.variable} antialiased`}
       >
-        <CartProvider>
-          <WishlistProvider>
-            <SmoothScroll />
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
-          </WishlistProvider>
-        </CartProvider>
+        <ToastProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <SmoothScroll />
+              <Navbar />
+              <CartModal />
+              <main>{children}</main>
+              <Footer />
+            </WishlistProvider>
+          </CartProvider>
+        </ToastProvider>
       </body>
     </html>
   );

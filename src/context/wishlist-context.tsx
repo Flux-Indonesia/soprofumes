@@ -1,6 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { products } from "@/data/products";
+import { useToast } from "@/components/toast";
 
 interface WishlistContextType {
   wishlist: number[];
@@ -15,6 +17,7 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const stored = localStorage.getItem("sopro-wishlist");
@@ -43,7 +46,16 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const isInWishlist = (productId: number) => wishlist.includes(productId);
 
   const toggleWishlist = (productId: number) => {
-    isInWishlist(productId) ? removeFromWishlist(productId) : addToWishlist(productId);
+    const product = products.find((p) => p.id === productId);
+    const name = product?.name || "Item";
+
+    if (isInWishlist(productId)) {
+      removeFromWishlist(productId);
+      showToast(`${name} removed from wishlist`, "info");
+    } else {
+      addToWishlist(productId);
+      showToast(`${name} added to wishlist`, "success");
+    }
   };
 
   return (

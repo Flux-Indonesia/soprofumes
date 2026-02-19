@@ -1,211 +1,203 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
-
 const ingredients = [
   {
     name: "Oud",
-    origin: "Middle East",
+    origin: "Southeast Asia",
+    intensity: "Infinite",
     rarity: "Legendary",
-    rarityColor: "amber",
-    intensity: 95,
-    priceRange: "\u00A32,000 - \u00A315,000/kg",
-    image: "/ingredients/oud.png",
-    history:
-      "Oud has been treasured for over 3,000 years across Middle Eastern and Asian cultures. Ancient texts reference its use in royal ceremonies and spiritual rituals. Trade routes were established solely for this precious resin.",
+    price: "£2,000-15,000 per kg",
     description:
-      "Known as liquid gold, oud is extracted from the resinous heartwood of Aquilaria trees infected by a specific mould. Less than 2% of wild Aquilaria trees produce oud.",
+      'Also known as agarwood, this "liquid gold" is the heart of luxury perfumery, offering deep, balsamic, and animalic notes with unparalleled depth and complexity.',
+    history:
+      "Oud has been treasured for over 3,000 years, mentioned in ancient Sanskrit texts and prized by royal courts. Trade routes were established solely for this precious resin.",
   },
   {
     name: "Saffron",
-    origin: "Iran",
+    origin: "Middle East",
+    intensity: "High",
     rarity: "Ultra Rare",
-    rarityColor: "purple",
-    intensity: 78,
-    priceRange: "\u00A33,000 - \u00A35,000/kg",
-    image: "/ingredients/saffron.png",
-    history:
-      "Cultivated for over 3,500 years, saffron was used by Cleopatra as a beauty treatment and by Persian royalty to scent their baths. It remains the world's most expensive spice by weight.",
+    price: "£3,000-5,000 per kg",
     description:
-      "Each saffron crocus flower yields only three delicate stigmas, hand-harvested at dawn. It takes approximately 150,000 flowers to produce a single kilogram.",
+      "The world's most expensive spice provides a bittersweet, leathery, and earthy profile with a soft honey-like warmth that elevates any composition.",
+    history:
+      "Cultivated for over 3,500 years, saffron was worth more than gold in ancient times. Each flower produces only three delicate stigmas, hand-harvested at dawn.",
   },
   {
     name: "Iso E Super",
     origin: "Laboratory",
+    intensity: "Variable",
     rarity: "Rare",
-    rarityColor: "cyan",
-    intensity: 62,
-    priceRange: "\u00A3200 - \u00A3400/kg",
-    image: "/ingredients/iso_e_super.png",
-    history:
-      "Discovered in 1973 by International Flavors & Fragrances, Iso E Super revolutionized modern perfumery. It became the backbone of countless designer and niche fragrances worldwide.",
+    price: "£200-400 per kg",
     description:
-      "A synthetic aromachemical that creates a velvet-smooth, woody-amber aura. It enhances other ingredients while providing a unique pheromone-like effect.",
+      "A synthetic molecule used to add velvety texture, radiance, and a subtle cedarwood-like scent that adapts uniquely to each wearer's skin chemistry.",
+    history:
+      'Discovered in 1973 by IFF, Iso E Super revolutionized modern perfumery. This "wonder molecule" creates an intimate scent bubble around the wearer.',
   },
   {
     name: "Ambergris",
     origin: "Oceanic",
+    intensity: "Long-lasting",
     rarity: "Legendary",
-    rarityColor: "amber",
-    intensity: 88,
-    priceRange: "\u00A320,000 - \u00A350,000/kg",
-    image: "/ingredients/ambergris.png",
-    history:
-      'Known as "floating gold," ambergris has been prized since ancient civilizations. Medieval Europeans believed it came from the tears of sea birds. Its true origin was only confirmed in the 19th century.',
+    price: "£20,000-50,000 per kg",
     description:
-      "A natural substance produced in the digestive system of sperm whales. Aged ambergris develops a sweet, earthy, marine scent that acts as a supreme fixative.",
+      "A rare substance that gives perfumes a salt-spray, tobacco, and oceanic animalic warmth, creating an irreplaceable marine-animal complexity.",
+    history:
+      'Once more valuable than gold, ambergris is formed in the digestive system of sperm whales. This "floating gold" has been used in perfumery for centuries.',
   },
 ];
 
-function getRarityColor(color: string) {
-  switch (color) {
-    case "amber":
-      return { bg: "bg-amber-500/20", text: "text-amber-500" };
-    case "purple":
-      return { bg: "bg-purple-500/20", text: "text-purple-500" };
-    case "cyan":
-      return { bg: "bg-cyan-500/20", text: "text-cyan-500" };
+function getRarityClass(rarity: string) {
+  switch (rarity) {
+    case "Legendary":
+      return "bg-amber-500/20 text-amber-500";
+    case "Ultra Rare":
+      return "bg-purple-500/20 text-purple-500";
+    case "Rare":
+      return "bg-cyan-500/20 text-cyan-500";
     default:
-      return { bg: "bg-gray-500/20", text: "text-gray-500" };
+      return "bg-gray-500/20 text-gray-500";
   }
 }
 
-const scienceBullets = [
-  { label: "Top notes evaporate within 15-30 minutes", color: "bg-[#D4AF37]" },
-  { label: "Heart notes emerge after 30 minutes to 2 hours", color: "bg-cyan-500" },
-  { label: "Base notes can last 6-24 hours on skin", color: "bg-amber-500" },
-  { label: "Molecular weight determines volatility and longevity", color: "bg-purple-500" },
-];
-
 export default function EducationPage() {
   return (
-    <main className="pt-32 pb-24 px-4 max-w-6xl mx-auto min-h-screen bg-[#0A0A0A]">
+    <div className="pt-32 pb-24 px-4 max-w-6xl mx-auto min-h-screen">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="mb-20 text-center"
-      >
-        <p className="text-[10px] uppercase tracking-[0.6em] text-[#D4AF37] mb-4 font-bold">
+      <div className="mb-20 text-center">
+        <h2 className="text-[10px] uppercase tracking-[0.6em] text-[#D4AF37] mb-4 font-bold">
           Laboratory Knowledge
-        </p>
-        <h1 className="text-3xl font-bold leading-tight text-white">
+        </h2>
+        <h1 className="text-3xl font-bold leading-tight">
           Molecular <br /> Archive
         </h1>
-        <p className="text-lg opacity-60 font-light mt-6 max-w-2xl mx-auto text-white">
-          Explore the aromatic compounds that form the foundation of fine
-          perfumery. From ancient resins traded along the Silk Road to
-          cutting-edge synthetic molecules born in modern laboratories, each
-          ingredient carries a story measured in centuries.
+        <p className="text-lg opacity-60 font-light mt-6 max-w-2xl mx-auto">
+          Explore the world&apos;s most precious aromatic compounds, from
+          ancient oud forests to cutting-edge synthetic molecules. Each
+          ingredient tells a story of rarity, craftsmanship, and olfactory
+          artistry.
         </p>
-      </motion.div>
+      </div>
 
       {/* Rarity Legend */}
       <div className="grid md:grid-cols-4 gap-4 mb-16">
         <div className="p-4 bg-white/[0.03] border border-white/10 rounded-[1.5rem] text-center">
-          <p className="text-base font-bold text-amber-500 mb-1">Legendary</p>
-          <p className="text-xs opacity-60 text-white">Exceptionally rare, museum-grade</p>
+          <h3 className="text-base font-bold text-amber-500 mb-1">
+            Legendary
+          </h3>
+          <p className="text-xs opacity-60">Ultra-rare, priceless ingredients</p>
         </div>
         <div className="p-4 bg-white/[0.03] border border-white/10 rounded-[1.5rem] text-center">
-          <p className="text-base font-bold text-purple-500 mb-1">Ultra Rare</p>
-          <p className="text-xs opacity-60 text-white">Limited availability worldwide</p>
+          <h3 className="text-base font-bold text-purple-500 mb-1">
+            Ultra Rare
+          </h3>
+          <p className="text-xs opacity-60">Exceptional quality materials</p>
         </div>
         <div className="p-4 bg-white/[0.03] border border-white/10 rounded-[1.5rem] text-center">
-          <p className="text-base font-bold text-cyan-500 mb-1">Rare</p>
-          <p className="text-xs opacity-60 text-white">Scarce but obtainable</p>
+          <h3 className="text-base font-bold text-cyan-500 mb-1">Rare</h3>
+          <p className="text-xs opacity-60">Premium sourced compounds</p>
         </div>
         <div className="p-4 bg-white/[0.03] border border-white/10 rounded-[1.5rem] text-center">
-          <p className="text-base font-bold text-gray-500 mb-1">Common</p>
-          <p className="text-xs opacity-60 text-white">Widely available compound</p>
+          <h3 className="text-base font-bold text-gray-500 mb-1">Common</h3>
+          <p className="text-xs opacity-60">High-quality base materials</p>
         </div>
       </div>
 
       {/* Ingredient Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-        {ingredients.map((ingredient, index) => {
-          const rarityStyle = getRarityColor(ingredient.rarityColor);
-          return (
-            <motion.div
-              key={ingredient.name}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="p-12 bg-white/[0.03] border border-white/10 rounded-[3rem] group transition-all hover:border-[#D4AF37]/50 cursor-pointer"
-            >
-              <div className="flex items-center justify-between mb-4">
+        {ingredients.map((ing) => (
+          <div
+            key={ing.name}
+            className="p-12 bg-white/[0.03] border border-white/10 rounded-[3rem] group transition-all hover:border-[#D4AF37]/50 cursor-pointer"
+          >
+            <div className="flex justify-between items-start mb-8">
+              <div>
                 <h3 className="text-xl font-bold text-[#D4AF37] mb-2">
-                  {ingredient.name}
+                  {ing.name}
                 </h3>
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`text-[9px] uppercase tracking-widest px-2 py-1 rounded-full font-bold ${rarityStyle.bg} ${rarityStyle.text}`}
-                  >
-                    {ingredient.rarity}
-                  </span>
-                  <span className="text-[9px] uppercase tracking-widest opacity-40 bg-[#0A0A0A] px-3 py-1 rounded-full border border-white/10 text-white">
-                    {ingredient.origin}
-                  </span>
-                </div>
+                <span
+                  className={`text-[9px] uppercase tracking-widest px-2 py-1 rounded-full font-bold ${getRarityClass(ing.rarity)}`}
+                >
+                  {ing.rarity}
+                </span>
               </div>
+              <span className="text-[9px] uppercase tracking-widest opacity-40 bg-[#0A0A0A] px-3 py-1 rounded-full border border-white/10">
+                {ing.origin}
+              </span>
+            </div>
 
-              <p className="text-lg opacity-70 leading-relaxed font-light mb-4 text-white">
-                {ingredient.description}
-              </p>
+            <p className="text-lg opacity-70 leading-relaxed font-light mb-4">
+              {ing.description}
+            </p>
 
-              <p className="text-sm opacity-50 leading-relaxed font-light mb-8 text-white">
-                {ingredient.history.slice(0, 150)}...
-              </p>
+            <p className="text-sm opacity-50 leading-relaxed font-light mb-8">
+              {ing.history.slice(0, 150)}...
+            </p>
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[8px] uppercase tracking-widest text-[#D4AF37] font-bold">
-                    Intensity: {ingredient.intensity}/100
-                  </p>
-                </div>
-                <p className="text-[8px] uppercase tracking-widest opacity-40 font-bold text-white">
-                  {ingredient.priceRange}
-                </p>
-              </div>
-            </motion.div>
-          );
-        })}
+            <div className="flex items-center justify-between">
+              <span className="text-[8px] uppercase tracking-widest text-[#D4AF37] font-bold">
+                Intensity: {ing.intensity}
+              </span>
+              <span className="text-[8px] uppercase tracking-widest opacity-40 font-bold">
+                {ing.price}
+              </span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Science Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="grid md:grid-cols-2 gap-12 items-center"
-      >
+      {/* The Science of Scent */}
+      <div className="grid md:grid-cols-2 gap-12 items-center">
         <div>
-          <h2 className="text-xl font-bold mb-6 text-white">
-            The Science of Scent
-          </h2>
-          <div className="space-y-4">
-            {scienceBullets.map((bullet) => (
-              <div key={bullet.label} className="flex items-center gap-3">
-                <div className={`w-1.5 h-1.5 rounded-full ${bullet.color}`} />
-                <p className="text-sm opacity-60 text-white">{bullet.label}</p>
-              </div>
-            ))}
+          <h2 className="text-xl font-bold mb-6">The Science of Scent</h2>
+          <p className="text-base opacity-70 leading-relaxed mb-6">
+            Our neural extraction laboratory combines traditional perfumery
+            techniques with cutting-edge molecular analysis. Each ingredient
+            undergoes rigorous testing to ensure purity, potency, and olfactory
+            excellence.
+          </p>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full" />
+              <span className="text-sm">Molecular composition analysis</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full" />
+              <span className="text-sm">Purity verification (99.9%+)</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
+              <span className="text-sm">Olfactory profile mapping</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 bg-purple-500 rounded-full" />
+              <span className="text-sm">Longevity and sillage testing</span>
+            </div>
           </div>
         </div>
 
         <div className="aspect-video bg-white/[0.03] rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl group">
-          <Image
-            src="/ingredients/saffron.png"
-            alt="The Science of Scent"
-            width={800}
-            height={450}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          <img
+            src="https://images.pexels.com/photos/2280549/pexels-photo-2280549.jpeg?auto=compress&cs=tinysrgb&w=800"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+            alt="Laboratory"
           />
         </div>
-      </motion.div>
-    </main>
+      </div>
+    </div>
   );
 }
